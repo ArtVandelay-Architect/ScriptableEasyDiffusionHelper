@@ -22,28 +22,58 @@ if (!fm.fileExists (internalRoot))
 	fm.createDirectory (internalRoot)
 
 let externalRoot = fm.joinPath (
-	fm.bookmarkedPath("ScriptableOpen"),
+	fm.bookmarkedPath("SEDHOpen"),
 	"SEDH"
 );
 if (!fm.fileExists (externalRoot))
 	fm.createDirectory (externalRoot)
 
+// --- file types
+IMAGE_SUFFIX = "png"
+JSON_SUFFIX = "json.txt"
+
 // --- file helper functions
 // get the suffix of the file
-function get_file_suffix (filePath) {
+function get_suffix (filePath) {
 	let parts = filePath.split ('.');
 	if (parts.length > 1) {
 		return parts.pop ();
 	}
 	return '';
 }
+// swap the suffix between json and image
+// mode 1 is json, 2 is image
+function swap_suffix (filePath, mode) {
+	let base = filePath.split ('.')[0];
+
+	if (mode == 1)
+		return base + "." + JSON_SUFFIX;
+	if (mode == 2)
+		return base + "." + IMAGE_SUFFIX;
+}
 
 function push_to_external () {
-	fm.copy (internalRoot, externalRoot)
 }
 
 function pull_to_internal () {
-	fm.copy (externalRoot, internalRoot)
+	let files = fm.listContents (externalRoot);
+	for (let i = 0; i < files.length; i++) {
+		// image file candidate
+		let iFile = files[i];
+		if (IMAGE_SUFFIX == get_suffix (iFile)) {
+			jFile = swap_suffix (iFile, 1);
+			jPath = fm.joinPath (externalRoot,
+			                     jFile);
+			if (!fm.fileExists (jPath))
+				continue;
+
+			iPath = fm.joinPath (externalRoot,
+			                     iFile);
+			
+
+				
+		}
+	}
 }
 
 function view_internal () {
